@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.easywallet.api.NewsManager
 import com.example.easywallet.destinations.Destination
 import com.example.easywallet.navigation.BottomNav
 import com.example.easywallet.screens.AccountScreen
@@ -61,8 +63,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             EasyWalletTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    // Nav controller
                     val navController = rememberNavController()
-                    EasyWallet(navController = navController, modifier = Modifier.padding(innerPadding))
+
+                    val newsManager: NewsManager by viewModels()
+
+
+                    EasyWallet(
+                        navController = navController,
+                        modifier = Modifier.padding(innerPadding),
+                        newsManager = newsManager
+                    )
                 }
             }
         }
@@ -72,7 +83,7 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EasyWallet(navController: NavController, modifier: Modifier) {
+fun EasyWallet(navController: NavController, modifier: Modifier, newsManager: NewsManager) {
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
 
@@ -134,7 +145,7 @@ fun EasyWallet(navController: NavController, modifier: Modifier) {
             composable(Destination.Expenses.route) { ExpensesScreen(navController) }
             composable(Destination.Transactions.route) { TransactionsScreen() }
             composable(Destination.Account.route) { AccountScreen() }
-            composable(Destination.News.route) { NewsScreen() }
+            composable(Destination.News.route) { NewsScreen(newsManager) }
 
             composable("categories") { CategoriesScreen() }
         }
