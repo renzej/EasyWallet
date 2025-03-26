@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit
 fun NewsScreen(newsManager: NewsManager) {
     // For the API
     LaunchedEffect(Unit) {
-        newsManager.getTopHeadlines()
+        newsManager.getTopHeadlines() // Fetch data when the screen is loaded
     }
 
     // Observe the news response
@@ -69,7 +69,6 @@ fun NewsScreen(newsManager: NewsManager) {
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    // Directly display the title when it should be visible
                     if (shouldShowTopBarTitle) {
                         Text(
                             text = "News",
@@ -87,46 +86,55 @@ fun NewsScreen(newsManager: NewsManager) {
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            state = scrollState,  // Attach the scrollState to LazyColumn
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 15.dp, bottom = innerPadding.calculateBottomPadding() + 80.dp, end = 15.dp, top = innerPadding.calculateTopPadding())
+                .padding(bottom = innerPadding.calculateBottomPadding() + 40.dp)
         ) {
-            item {
-                // **Header Section** (Add this as the first item inside LazyColumn)
-                Text(
-                    text = "News",
-                    fontSize = 38.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp)
-                )
-            }
-
-            // Check if there are any news articles to display
-            if (newsArticles.isNotEmpty()) {
-                items(newsArticles) { article ->
-                    // Display the individual articles
-                    NewsItem(article = article)
-                    Spacer(modifier = Modifier.height(7.dp))
-                }
-            } else {
-                // Loading message if articles are not available
-                item {
-                    Text(
-                        text = "Loading...",
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(15.dp)
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = 15.dp,
+                        bottom = innerPadding.calculateBottomPadding(),
+                        end = 15.dp,
+                        top = innerPadding.calculateTopPadding()
                     )
+            ) {
+                item {
+                    // **Header Section** (Add this as the first item inside LazyColumn)
+                    Text(
+                        text = "News",
+                        fontSize = 38.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                    )
+                }
+
+                // Check if there are any news articles to display
+                if (newsArticles.isNotEmpty()) {
+                    items(newsArticles) { article ->
+                        NewsItem(article = article)
+                        Spacer(modifier = Modifier.height(7.dp))
+                    }
+                } else {
+                    // Loading message if articles are not available
+                    item {
+                        Text(
+                            text = "Loading...",
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(15.dp)
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-// Simple composable to display each news article
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsItem(article: Article) {
@@ -205,7 +213,6 @@ fun NewsItem(article: Article) {
     }
 }
 
-// Function to calculate time ago from the publishedAt date
 @RequiresApi(Build.VERSION_CODES.O)
 fun formatTimeAgo(publishedAt: String): String {
     val dateFormatter = DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault())
@@ -222,4 +229,3 @@ fun formatTimeAgo(publishedAt: String): String {
         else -> "Just now"
     }
 }
-
