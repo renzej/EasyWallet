@@ -4,18 +4,23 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +43,8 @@ fun NewsScreen(newsManager: NewsManager) {
     LaunchedEffect(Unit) {
         newsManager.getTopHeadlines() // Fetch data when the screen is loaded
     }
+
+    val focusManager = LocalFocusManager.current
 
     // Observe the news response
     val newsArticles by newsManager.newsResponse.collectAsState()
@@ -63,6 +70,9 @@ fun NewsScreen(newsManager: NewsManager) {
             if (shouldShowTopBarTitle) Color(0xFFE5E5EA) else Color.Transparent
         }
     }
+
+    // State for search query
+    var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -90,6 +100,12 @@ fun NewsScreen(newsManager: NewsManager) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding() + 40.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(onPress = {
+                        // Clear focus when tapping outside
+                        focusManager.clearFocus()
+                    })
+                }
         ) {
             LazyColumn(
                 state = scrollState,
@@ -111,6 +127,31 @@ fun NewsScreen(newsManager: NewsManager) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 10.dp)
+                    )
+                }
+
+                item {
+                    // **Search Bar** Section
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Search News") }, // Use placeholder instead of label
+                        modifier = Modifier
+                            .fillMaxWidth() // Reduced height for a smaller TextField
+                            .padding(5.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .height(50.dp),
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                newsManager.searchNews(searchQuery)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search Icon"
+                                )
+                            }
+                        },
+                        singleLine = true
                     )
                 }
 
