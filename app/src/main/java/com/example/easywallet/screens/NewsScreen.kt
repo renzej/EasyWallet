@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,9 +12,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -132,26 +135,10 @@ fun NewsScreen(newsManager: NewsManager) {
 
                 item {
                     // **Search Bar** Section
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        placeholder = { Text("Search News") }, // Use placeholder instead of label
-                        modifier = Modifier
-                            .fillMaxWidth() // Reduced height for a smaller TextField
-                            .padding(5.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                            .height(50.dp),
-                        trailingIcon = {
-                            IconButton(onClick = {
-                                newsManager.searchNews(searchQuery)
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "Search Icon"
-                                )
-                            }
-                        },
-                        singleLine = true
+                    CustomSearchBar(
+                        searchQuery = searchQuery,
+                        onSearchQueryChange = { searchQuery = it },
+                        onSearchClick = { newsManager.searchNews(searchQuery) }
                     )
                 }
 
@@ -265,8 +252,68 @@ fun formatTimeAgo(publishedAt: String): String {
     val minutes = TimeUnit.MILLISECONDS.toMinutes(duration.toMillis()) % 60
 
     return when {
-        hours >= 1 -> "$hours"+"h ago" // Using "h" for hours
-        minutes >= 1 -> "$minutes"+"m ago" // Using "m" for minutes
+        hours >= 1 -> "$hours" + "h ago" // Using "h" for hours
+        minutes >= 1 -> "$minutes" + "m ago" // Using "m" for minutes
         else -> "Just now"
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomSearchBar(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // TextField with dynamic width based on the search query length
+        TextField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChange,
+            placeholder = { Text("Search News") },
+            modifier = Modifier
+                .weight(1f) // This allows the TextField to shrink horizontally when necessary
+                .padding(5.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .height(50.dp),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search Icon"
+                )
+            },
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    // Clear Icon (X) when text is entered
+                    IconButton(onClick = { onSearchQueryChange("") }) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Clear Icon"
+                        )
+                    }
+                }
+            },
+            singleLine = true,
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
+        )
+
+        // Show "Search" clickable text when text is entered
+        if (searchQuery.isNotEmpty()) {
+            Text(
+                text = "Search",
+                color = Color.Blue,
+                modifier = Modifier
+                    .clickable(onClick = onSearchClick)
+                    .padding(start = 8.dp)
+            )
+        }
+    }
+}
+
+
