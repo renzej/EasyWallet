@@ -21,14 +21,6 @@ interface NewsService {
         @Query("category") category: String
     ): Call<NewsData>
 
-    // Get headlines from a specific source (e.g., BBC, CNN)
-    @GET("v2/top-headlines")
-    fun getArticlesBySource(
-        @Query("apiKey") apiKey: String,
-        @Query("language") language: String = "en",
-        @Query("sources") source: String
-    ): Call<NewsData>
-
     // Search news by keyword
     @GET("v2/everything")
     fun searchNews(

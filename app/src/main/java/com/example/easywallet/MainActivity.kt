@@ -26,7 +26,9 @@ import com.example.easywallet.screens.AccountScreen
 import com.example.easywallet.screens.CategoriesScreen
 import com.example.easywallet.screens.ExpensesScreen
 import com.example.easywallet.screens.HomeScreen
+import com.example.easywallet.screens.LoginScreen
 import com.example.easywallet.screens.NewsScreen
+import com.example.easywallet.screens.RegisterScreen
 import com.example.easywallet.screens.SplashScreen
 import com.example.easywallet.screens.TransactionsScreen
 import com.example.easywallet.ui.theme.EasyWalletTheme
@@ -66,8 +68,12 @@ fun EasyWallet(navController: NavController, modifier: Modifier, newsManager: Ne
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != Destination.Splash.route)
+            if (
+                currentRoute != Destination.Splash.route &&
+                currentRoute != Destination.Login.route &&
+                currentRoute != Destination.Register.route) {
                 BottomNav(navController = navController)
+            }
         }
     ) {
         NavHost(
@@ -81,7 +87,9 @@ fun EasyWallet(navController: NavController, modifier: Modifier, newsManager: Ne
             composable(Destination.Account.route) { AccountScreen() }
             composable(Destination.News.route) { NewsScreen(newsManager) }
 
-            composable("categories") { CategoriesScreen() }
+            composable(Destination.Login.route) { LoginScreen(navController) }
+            composable(Destination.Register.route) { RegisterScreen(navController) }
+            composable(Destination.Category.route) { CategoriesScreen() }
         }
     }
 }

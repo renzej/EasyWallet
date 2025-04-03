@@ -22,40 +22,31 @@ class NewsManager : ViewModel() {
 
     // Fetch top headlines
     fun getTopHeadlines() {
-        fetchArticles(category = null, source = null, query = null)
+        fetchArticles(category = null, query = null)
     }
 
     // Fetch business news
     fun getBusinessNews() {
-        fetchArticles(category = "business", source = null, query = null)
+        fetchArticles(category = "business", query = null)
     }
 
     // Fetch technology news
     fun getTechnologyNews() {
-        fetchArticles(category = "technology", source = null, query = null)
-    }
-
-    // Fetch articles by source (e.g., BBC, CNN)
-    fun getArticlesBySource(source: String) {
-        fetchArticles(category = null, source = source, query = null)
+        fetchArticles(category = "technology", query = null)
     }
 
     // Search for news by keyword
     fun searchNews(query: String) {
-        fetchArticles(category = null, source = null, query = query)
+        fetchArticles(category = null, query = query)
     }
 
     // Fetch articles with category, source, or search query (depending on parameters)
-    private fun fetchArticles(category: String?, source: String?, query: String?) {
+    private fun fetchArticles(category: String?, query: String?) {
         viewModelScope.launch {
             val call: Call<NewsData> = when {
                 !category.isNullOrEmpty() -> {
                     // Fetch by category
                     Api.retrofitService.getArticlesByCategory(apiKey, category = category)
-                }
-                !source.isNullOrEmpty() -> {
-                    // Fetch by source
-                    Api.retrofitService.getArticlesBySource(apiKey, source = source)
                 }
                 !query.isNullOrEmpty() -> {
                     // Search by keyword
