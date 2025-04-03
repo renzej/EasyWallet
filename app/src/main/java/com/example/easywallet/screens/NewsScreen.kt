@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -24,7 +25,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -37,6 +40,14 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
+/**
+ * [NewsScreen] - Displays the News screen with a list of articles.
+ * @param newsManager Handles fetching and managing news articles.
+ * Features:
+ * - Shows top headlines on load.
+ * - Allows category filtering (General, Business, Technology).
+ * - Supports searching for news articles.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +57,6 @@ fun NewsScreen(newsManager: NewsManager) {
     LaunchedEffect(Unit) {
         newsManager.getTopHeadlines() // Fetch data when the screen is loaded
     }
-
     val focusManager = LocalFocusManager.current
 
     // Observe the news response
@@ -85,17 +95,22 @@ fun NewsScreen(newsManager: NewsManager) {
                     if (shouldShowTopBarTitle) {
                         Text(
                             text = "News",
-                            modifier = Modifier.padding(top = 20.dp),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.Black
+                            color = Color.Black,
+                            modifier = Modifier.padding(top = 18.dp)
                         )
                     }
                 },
+                navigationIcon = {
+                    NewsFilterDropdown(
+                        onGeneralNewsClick = { newsManager.getTopHeadlines() },
+                        onBusinessNewsClick = { newsManager.getBusinessNews() },
+                        onTechnologyNewsClick = { newsManager.getTechnologyNews() }
+                    )
+                },
                 modifier = Modifier.height(80.dp),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = topBarColor
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = topBarColor)
             )
         }
     ) { innerPadding ->
@@ -163,6 +178,12 @@ fun NewsScreen(newsManager: NewsManager) {
     }
 }
 
+/**
+ * [NewsItem] - Displays the news in this composable its a rectangular container
+ * that holds the news item and displays its information
+ * @param article The news item from the API
+ * @return None, but it displays the News item in the UI
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsItem(article: Article) {
@@ -241,6 +262,12 @@ fun NewsItem(article: Article) {
     }
 }
 
+/**
+ * [formatTimeAgo] - It reformats the information about the news by displaying
+ * it as how long ago the news posted.
+ * @param publishedAt This is the published information of the news item
+ * @return The formatted time how long the news was created
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 fun formatTimeAgo(publishedAt: String): String {
     val dateFormatter = DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault())
@@ -258,6 +285,14 @@ fun formatTimeAgo(publishedAt: String): String {
     }
 }
 
+/**
+ * [CustomSearchBar] - It creates a custom search bar using TextField and
+ * some animations.
+ * @param searchQuery The user input
+ * @param onSearchQueryChange Event that happens when the search String changes
+ * @param onSearchClick Event handler for when submit is clicked
+ * @return None, but it updates the Search endpoint of the API
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomSearchBar(
@@ -307,7 +342,7 @@ fun CustomSearchBar(
         if (searchQuery.isNotEmpty()) {
             Text(
                 text = "Search",
-                color = Color.Blue,
+                color = Color(0xFF007AFF),
                 modifier = Modifier
                     .clickable(onClick = onSearchClick)
                     .padding(start = 8.dp)
@@ -315,5 +350,67 @@ fun CustomSearchBar(
         }
     }
 }
+
+/**
+ * [NewsFilterDropdown] - It creates a Dropdown menu at the top left
+ * corner of the screen that serves as a filter for the news
+ * @param onGeneralNewsClick Redirects the api endpoint to the getTopHeadlines
+ * @param onBusinessNewsClick Redirects the api to the Business News
+ * @param onTechnologyNewsClick Redirects the api to Technology related news
+ * @return None
+ */
+@Composable
+fun NewsFilterDropdown(
+    onGeneralNewsClick: () -> Unit,
+    onBusinessNewsClick: () -> Unit,
+    onTechnologyNewsClick: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) } // Track menu state
+
+    Box {
+        // Clickable text that always stays visible
+        ClickableText(
+            text = AnnotatedString("Filter"),
+            onClick = { expanded = true }, // Open dropdown menu
+            style = androidx.compose.ui.text.TextStyle(
+                color = Color(0xFF007AFF),
+                fontSize = 18.sp
+            ),
+            modifier = Modifier.padding(start = 20.dp, top = 22.dp)
+        )
+
+        // Dropdown menu
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }, // Close when clicking outside
+            offset = DpOffset(20.dp, 5.dp),
+            modifier = Modifier
+                .background(Color.White)
+        ) {
+            DropdownMenuItem(
+                text = { Text("General", fontSize = 15.sp) },
+                onClick = {
+                    onGeneralNewsClick() // Call general news function
+                    expanded = false // Close menu
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Business", fontSize = 15.sp) },
+                onClick = {
+                    onBusinessNewsClick() // Call business news function
+                    expanded = false // Close menu
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Technology", fontSize = 15.sp) },
+                onClick = {
+                    onTechnologyNewsClick() // Call tech news function
+                    expanded = false // Close menu
+                }
+            )
+        }
+    }
+}
+
 
 

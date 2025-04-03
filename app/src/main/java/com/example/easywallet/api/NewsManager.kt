@@ -11,13 +11,14 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.example.easywallet.BuildConfig
 
 class NewsManager : ViewModel() {
 
     private val _newsResponse = MutableStateFlow<List<Article>>(emptyList())
     val newsResponse: StateFlow<List<Article>> get() = _newsResponse
 
-    private val apiKey = "de064650e1954544b62def6f29cc7595"
+    val apiKey = BuildConfig.NEWS_API_KEY
 
     // Fetch top headlines
     fun getTopHeadlines() {

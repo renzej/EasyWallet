@@ -9,6 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
+        buildConfigField("String", "NEWS_API_KEY", "\"${project.findProperty("NEWS_API_KEY") ?: "default_value"}\"")
         applicationId = "com.example.easywallet"
         minSdk = 24
         targetSdk = 34
@@ -36,6 +37,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
