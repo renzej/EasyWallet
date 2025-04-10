@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.easywallet.api.NewsManager
+import com.example.easywallet.api.QuotesManager
 import com.example.easywallet.destinations.Destination
 import com.example.easywallet.navigation.BottomNav
 import com.example.easywallet.screens.AccountScreen
@@ -33,7 +34,6 @@ import com.example.easywallet.screens.SplashScreen
 import com.example.easywallet.screens.TransactionsScreen
 import com.example.easywallet.ui.theme.EasyWalletTheme
 
-
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,16 +42,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             EasyWalletTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Nav controller
+                    // Nav Controller
                     val navController = rememberNavController()
 
+                    // News Manager and Quotes Manager
                     val newsManager: NewsManager by viewModels()
-
+                    val quotesManager: QuotesManager by viewModels()
 
                     EasyWallet(
                         navController = navController,
                         modifier = Modifier.padding(innerPadding),
-                        newsManager = newsManager
+                        newsManager = newsManager,
+                        quotesManager = quotesManager
                     )
                 }
             }
@@ -62,7 +64,12 @@ class MainActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun EasyWallet(navController: NavController, modifier: Modifier, newsManager: NewsManager) {
+fun EasyWallet(
+    navController: NavController,
+    modifier: Modifier,
+    newsManager: NewsManager,
+    quotesManager: QuotesManager
+) {
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
 
@@ -81,7 +88,7 @@ fun EasyWallet(navController: NavController, modifier: Modifier, newsManager: Ne
             startDestination = Destination.Splash.route
         ) {
             composable(Destination.Splash.route) { SplashScreen(navController) }
-            composable(Destination.Home.route) { HomeScreen() }
+            composable(Destination.Home.route) { HomeScreen(quotesManager) }
             composable(Destination.Expenses.route) { ExpensesScreen(navController) }
             composable(Destination.Transactions.route) { TransactionsScreen(navController) }
             composable(Destination.Account.route) { AccountScreen() }

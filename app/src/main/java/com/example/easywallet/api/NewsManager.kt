@@ -46,15 +46,15 @@ class NewsManager : ViewModel() {
             val call: Call<NewsData> = when {
                 !category.isNullOrEmpty() -> {
                     // Fetch by category
-                    Api.retrofitService.getArticlesByCategory(apiKey, category = category)
+                    NewsApi.retrofitService.getArticlesByCategory(apiKey, category = category)
                 }
                 !query.isNullOrEmpty() -> {
                     // Search by keyword
-                    Api.retrofitService.searchNews(apiKey, query = query)
+                    NewsApi.retrofitService.searchNews(apiKey, query = query)
                 }
                 else -> {
                     // Fetch all top headlines
-                    Api.retrofitService.getTopHeadlines(apiKey)
+                    NewsApi.retrofitService.getTopHeadlines(apiKey)
                 }
             }
 

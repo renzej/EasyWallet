@@ -28,7 +28,7 @@ import com.example.easywallet.destinations.Destination
 fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(1000)
-        navController.navigate(Destination.Login.route) {
+        navController.navigate(Destination.Home.route) {
             popUpTo(Destination.Splash.route) { inclusive = true }
         }
     }

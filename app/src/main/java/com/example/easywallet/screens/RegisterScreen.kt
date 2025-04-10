@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavController) {
     var firstName by remember { mutableStateOf("") }
@@ -60,7 +63,11 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .height(50.dp)
+                .height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedLabelColor =  Color(0xff3c632e),
+                focusedIndicatorColor = Color(0xff3c632e)
+            )
         )
 
         // Last Name TextField
@@ -72,7 +79,11 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .height(50.dp)
+                .height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedLabelColor =  Color(0xff3c632e),
+                focusedIndicatorColor = Color(0xff3c632e)
+            )
         )
 
         // Email TextField
@@ -84,7 +95,11 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .height(50.dp)
+                .height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedLabelColor =  Color(0xff3c632e),
+                focusedIndicatorColor = Color(0xff3c632e)
+            )
         )
 
         // Username TextField
@@ -96,7 +111,11 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .height(50.dp)
+                .height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedLabelColor =  Color(0xff3c632e),
+                focusedIndicatorColor = Color(0xff3c632e)
+            )
         )
 
         // Password TextField
@@ -109,7 +128,11 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .height(50.dp)
+                .height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedLabelColor =  Color(0xff3c632e),
+                focusedIndicatorColor = Color(0xff3c632e)
+            )
         )
 
         // Confirm Password TextField
@@ -127,6 +150,10 @@ fun RegisterScreen(navController: NavController) {
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(15.dp))
                 .height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedLabelColor =  Color(0xff3c632e),
+                focusedIndicatorColor = Color(0xff3c632e)
+            ),
             isError = !isPasswordMatch
         )
 
@@ -165,7 +192,7 @@ fun RegisterScreen(navController: NavController) {
             modifier = Modifier
                 .padding(top = 16.dp)
                 .clickable { navController.navigate("login") },
-            fontSize = 14.sp
+            fontSize = 15.sp
         )
     }
 }

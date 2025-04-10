@@ -5,8 +5,8 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-object Api {
-    private val BASE_URL = "https://newsapi.org/"
+object QuotesApi {
+    private val BASE_URL = "https://zenquotes.io/api/"
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -16,7 +16,8 @@ object Api {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
         .build()
-    val retrofitService: NewsService by lazy {
-        retrofit.create(NewsService::class.java)
+
+    val retrofitService: QuotesService by lazy {
+        retrofit.create(QuotesService::class.java)
     }
 }

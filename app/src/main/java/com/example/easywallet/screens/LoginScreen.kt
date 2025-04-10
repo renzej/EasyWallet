@@ -1,6 +1,7 @@
 package com.example.easywallet.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,12 +39,13 @@ import com.example.easywallet.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
-    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally, // Center horizontally
         verticalArrangement = Arrangement.Center // Center vertically
@@ -56,10 +58,10 @@ fun LoginScreen(navController: NavController) {
                 .padding(bottom = 32.dp) // Space between the logo and text fields
         )
 
-        // Username TextField
+        // Email TextField
         TextField(
-            value = username,
-            onValueChange = { username = it },
+            value = email,
+            onValueChange = { email = it },
             placeholder = { Text("Username") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,8 +69,8 @@ fun LoginScreen(navController: NavController) {
                 .clip(RoundedCornerShape(15.dp))
                 .height(50.dp),
             trailingIcon = {
-                if (username.isNotEmpty()) {
-                    IconButton(onClick = { username = "" }) {
+                if (email.isNotEmpty()) {
+                    IconButton(onClick = { email = "" }) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Clear Icon"
