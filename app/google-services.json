@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "415100629056",
+    "project_id": "easywalletuserdb",
+    "storage_bucket": "easywalletuserdb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415100629056:android:b301a38ee65ceeb1da6fa5",
+        "android_client_info": {
+          "package_name": "com.example.easywallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD21ZmtgC4wFjIJ0_qRSXJd1U2JmPlinfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

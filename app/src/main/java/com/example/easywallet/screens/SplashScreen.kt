@@ -1,5 +1,8 @@
 package com.example.easywallet.screens
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,22 +19,42 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.easywallet.R
+import com.example.easywallet.SignInActivity
 import kotlinx.coroutines.delay
 import com.example.easywallet.destinations.Destination
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun SplashScreen(navController: NavController) {
+    val context = LocalContext.current
+    val currentUser = FirebaseAuth.getInstance().currentUser
+
     LaunchedEffect(Unit) {
         delay(1000)
-        navController.navigate(Destination.Home.route) {
-            popUpTo(Destination.Splash.route) { inclusive = true }
+        if (currentUser != null) {
+            // User is logged in, go to home screen
+            navController.navigate(Destination.Home.route) {
+                popUpTo(Destination.Splash.route) { inclusive = true }
+            }
+        } else {
+            // User is not logged in, launch SignInActivity
+            val intent = Intent(context, SignInActivity::class.java)
+            context.startActivity(intent)
+
+            // Finish MainActivity so it doesn't stay in back stack
+            if (context is Activity) {
+                context.finish()
+            }
         }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

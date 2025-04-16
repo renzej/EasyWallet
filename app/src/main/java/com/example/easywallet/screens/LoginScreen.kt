@@ -1,5 +1,9 @@
 package com.example.easywallet.screens
 
+import android.content.Context
+import android.content.Intent
+import android.provider.ContactsContract.CommonDataKinds.Email
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,11 +38,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.easywallet.MainActivity
 import com.example.easywallet.R
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    context: Context
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -62,7 +71,7 @@ fun LoginScreen(navController: NavController) {
         TextField(
             value = email,
             onValueChange = { email = it },
-            placeholder = { Text("Username") },
+            placeholder = { Text("Email") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
@@ -115,7 +124,9 @@ fun LoginScreen(navController: NavController) {
 
         // Login Button
         Button(
-            onClick = { /* Handle login */ },
+            onClick = {
+                performLogIn(email, password, context)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -142,3 +153,29 @@ fun LoginScreen(navController: NavController) {
         )
     }
 }
+
+private fun performLogIn(
+    email: String,
+    password: String,
+    context: Context
+) {
+    val auth = FirebaseAuth.getInstance()
+
+    auth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "Log In Successful", Toast.LENGTH_SHORT).show()
+
+                // Start MainActivity
+                val intent = Intent(context, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
+
+                // Finish SignInActivity
+                (context as? android.app.Activity)?.finish()
+            } else {
+                Toast.makeText(context, "Failed Log In", Toast.LENGTH_LONG).show()
+            }
+        }
+}
+
