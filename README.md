@@ -17,10 +17,10 @@ My goal was to build more than just a budgeting tool — I wanted to create some
 
 ### Built With
 The tech stack used to build this project
-<img src="https://img.shields.io/badge/Android_Studio-20232A?style=for-the-badge&logo=android&logoColor=3DDC84" alt="Android Studio" />
-<img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
-<img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
-<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman" />
+- <img src="https://img.shields.io/badge/Android_Studio-20232A?style=for-the-badge&logo=android&logoColor=3DDC84" alt="Android Studio" />
+- <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
+- <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+- <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman" />
 ### Features
 ### Installation
 ### License
