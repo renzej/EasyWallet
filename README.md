@@ -22,11 +22,17 @@ The tech stack used to build this project
 - <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
 - <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman" />
 ### Features
-- **Expense Tracking**
-  Add, View, Manage daily expenses in a clean intuitive interface.
-- NewsFeed Integration - Stay informed with a curated news updates accross Finance, Technology, and Sports-directly within the app.
-- User Authentication
-- Daily Motivation - A new inspirational quote delivered each day to encourage goal setting and financial discipline.
+- **Expense Tracking**  
+  Add, view, and manage daily expenses in a clean, intuitive interface.
+
+- **NewsFeed Integration**  
+  Stay informed with curated news updates across Finance, Technology, and Sports—directly within the app.
+
+- **User Authentication**  
+  Secure login system for personalized tracking and data protection.
+
+- **Daily Motivation**  
+  Receive an inspirational quote each day to encourage goal setting and financial discipline.
 ### Installation
 ### License
 ### Contact
