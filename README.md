@@ -22,6 +22,10 @@ The tech stack used to build this project
 - <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
 - <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman" />
 ### Features
+- Expense Tracking
+-   sdfsdf
+- NewsFeed
+- User Login
 ### Installation
 ### License
 ### Contact
