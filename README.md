@@ -25,7 +25,7 @@ The tech stack used to build this project
 - Expense Tracking - Add, View, Manage daily expenses in a clean intuitive interface.
 - NewsFeed Integration - Stay informed with a curated news updates accross Finance, Technology, and Sports-directly within the app.
 - User Authentication
-- Daily Motivation
+- Daily Motivation - A new inspirational quote delivered each day to encourage goal setting and financial discipline.
 ### Installation
 ### License
 ### Contact
