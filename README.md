@@ -34,6 +34,9 @@ The tech stack used to build this project
 - **Daily Motivation**  
   Receive an inspirational quote each day to encourage goal setting and financial discipline.
 ### Installation
+1. Get a free API at https://zenquotes.io/ and https://newsapi.org/
+2. Clone the repo
+3. 
 ### License
 ### Contact
 Created by renzej[https://github.com/renzej] - Feel free to reach out!
