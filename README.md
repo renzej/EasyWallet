@@ -1,9 +1,9 @@
-# About the Project
-## Features
-## Installation
-## License
-## Contact
+## About the Project
+### Features
+### Installation
+### License
+### Contact
 Created by renzej[https://github.com/renzej] - Feel free to reach out!
-## Acknowledgments
+### Acknowledgments
 - Icons by GoogleFonts
 - UI inspired by Apple
