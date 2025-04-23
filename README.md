@@ -24,13 +24,10 @@ The tech stack used to build this project
 ### Features
 - **Expense Tracking**  
   Add, view, and manage daily expenses in a clean, intuitive interface.
-
 - **NewsFeed Integration**  
   Stay informed with curated news updates across Finance, Technology, and Sports—directly within the app.
-
 - **User Authentication**  
   Secure login system for personalized tracking and data protection.
-
 - **Daily Motivation**  
   Receive an inspirational quote each day to encourage goal setting and financial discipline.
 ### Installation
