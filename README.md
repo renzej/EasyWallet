@@ -1,13 +1,12 @@
 ## About the Project
-EasyWallet is a mobile app I developed for my final project in my Mobile Development class. Designed with simplicity
-and user engagement in mind, it helps users track expenses intuitively and efficiently.
+EasyWallet is a mobile app I developed as the final project for my Mobile Development class. Built with simplicity and user engagement in mind, it offers a seamless and intuitive way to track monthly expenses.
 
-What sets EasyWallet apart from other tracking apps is that there is a news feed section to keep the user updated about
-current events be financial, sports, and technology. Also you're given an inspirational code everyday to keep 
-motivating you to pursue your goals.
+What sets EasyWallet apart from other finance apps is its unique approach to user experience. In addition to tracking spending, the app features a dynamic news feed that keeps users informed on current events — from finance to sports to technology. To add a personal touch of motivation, EasyWallet also delivers a daily inspirational quote, encouraging users to stay focused on their financial and personal goals.
 
-The app is built using Jetpack Compose to ensure a modern, responsive interface. Every design decision focuses on usability,
-especially for users who want to manage their finances efficiently on the go.
+Crafted with Jetpack Compose, the app delivers a modern, responsive interface designed for quick and efficient interactions. Every element of the design is centered around usability, especially for users who want to stay on top of their finances without feeling overwhelmed.
+
+My goal with EasyWallet was to build more than just another budget tracker — I wanted to create an app that not only helps users stay accountable but also inspires them to build better habits. By combining financial awareness with daily motivation, EasyWallet aims to turn budgeting into a meaningful and empowering part of everyday life.
+
 ### Built With
 ### Features
 ### Installation
