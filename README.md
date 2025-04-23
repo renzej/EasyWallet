@@ -16,6 +16,11 @@ The app is designed to feel less like a chore and more like a companion in your 
 My goal was to build more than just a budgeting tool — I wanted to create something that helps users build better habits, stay inspired, and take control of their finances one small step at a time.
 
 ### Built With
+The tech stack used to build this project
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg" width="20"/> **Android Studio**
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" width="20"/> **Kotlin**
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" width="20"/> **Firebase**
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" width="20"/> **Postman**
 ### Features
 ### Installation
 ### License
