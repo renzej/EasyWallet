@@ -43,6 +43,9 @@ Follow these steps to run EasyWallet locally:
    ```bash
    git clone https://github.com/renzej/EasyWallet.git
    cd EasyWallet
+3. **Enter you news API key in gradle.properties
+   ```bash
+   NEWS_API_KEY=your_key
 ### License
 ### Contact
 Created by renzej[https://github.com/renzej] - Feel free to reach out!
