@@ -31,9 +31,18 @@ The tech stack used to build this project
 - **Daily Motivation**  
   Receive an inspirational quote each day to encourage goal setting and financial discipline.
 ### Installation
-1. Get a free API at https://zenquotes.io/ and https://newsapi.org/
-2. Clone the repo
-3. 
+Follow these steps to run EasyWallet locally:
+1. **Get API Keys**  
+   Sign up and get free API keys from:  
+   - [ZenQuotes.io](https://zenquotes.io/) for daily quotes  
+   - [NewsAPI.org](https://newsapi.org/) for curated news
+
+2. **Clone the Repository**  
+   Open your terminal and run:
+
+   ```bash
+   git clone https://github.com/renzej/EasyWallet.git
+   cd EasyWallet
 ### License
 ### Contact
 Created by renzej[https://github.com/renzej] - Feel free to reach out!
