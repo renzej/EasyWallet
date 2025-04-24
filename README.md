@@ -15,15 +15,14 @@ The app is designed to feel less like a chore and more like a companion in your 
 
 My goal was to build more than just a budgeting tool — I wanted to create something that helps users build better habits, stay inspired, and take control of their finances one small step at a time.
 
-### Built With
----
+## Built With
 The tech stack used to build this project
 - <img src="https://img.shields.io/badge/Android_Studio-20232A?style=for-the-badge&logo=android&logoColor=3DDC84" alt="Android Studio" />
 - <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
 - <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
 - <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman" />
 
-### Features
+## Features
 - **Expense Tracking**  
   Add, view, and manage daily expenses in a clean, intuitive interface.
 - **NewsFeed Integration**  
@@ -33,7 +32,7 @@ The tech stack used to build this project
 - **Daily Motivation**  
   Receive an inspirational quote each day to encourage goal setting and financial discipline.
   
-### Installation
+## Installation
 Follow these steps to run EasyWallet locally:
 1. **Get API Keys**  
    Sign up and get free API keys from:  
@@ -51,7 +50,7 @@ Follow these steps to run EasyWallet locally:
    NEWS_API_KEY=your_key
 4. **Build and run the project**
 
-### Roadmap
+## Roadmap
 Here are some planned features and improvements for future versions of EasyWallet:
 
 - [ ] **Dark Mode**  
@@ -66,13 +65,13 @@ Here are some planned features and improvements for future versions of EasyWalle
 - [ ] **Advanced Analytics (Charts)**  
   Add graphs and charts to provide visual insights into spending habits.
    
-### License
+## License
 This project is licensed under the MIT License — see the `LICENSE.txt` file for full details.
 
-### Contact
+## Contact
 Created by renzej[https://github.com/renzej] - Feel free to reach out!
 
-### Acknowledgments
+## Acknowledgments
 - Icons by GoogleFonts
 - UI inspired by Apple
 - Logo by Malcolm White
