@@ -1,4 +1,5 @@
 ## About the Project
+---
 EasyWallet is a mobile app I developed as the final project for my Mobile Development class. Built with simplicity and user engagement in mind, it offers a seamless and intuitive way to track monthly expenses.
 
 What sets EasyWallet apart is its unique blend of functionality and motivation:
