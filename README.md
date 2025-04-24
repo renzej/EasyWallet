@@ -49,7 +49,9 @@ Follow these steps to run EasyWallet locally:
    ```bash
    NEWS_API_KEY=your_key
 4. **Build and run the project**
+   
 ### License
+This project is licensed under the MIT License — see the `LICENSE.txt` file for full details.
 
 ### Contact
 Created by renzej[https://github.com/renzej] - Feel free to reach out!
