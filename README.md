@@ -49,12 +49,28 @@ Follow these steps to run EasyWallet locally:
    ```bash
    NEWS_API_KEY=your_key
 4. **Build and run the project**
+
+### Roadmap
+Here are some planned features and improvements for future versions of EasyWallet:
+
+- [ ] **Dark Mode**  
+  Implement dark mode for users who prefer a darker interface.
+
+- [ ] **Multi-Currency Support**  
+  Allow users to track expenses in multiple currencies.
+
+- [ ] **Accessibility Improvements**  
+  Make the app more accessible with better support for screen readers and color contrast.
+
+- [ ] **Advanced Analytics (Charts)**  
+  Add graphs and charts to provide visual insights into spending habits.
    
 ### License
 This project is licensed under the MIT License — see the `LICENSE.txt` file for full details.
 
 ### Contact
 Created by renzej[https://github.com/renzej] - Feel free to reach out!
+
 ### Acknowledgments
 - Icons by GoogleFonts
 - UI inspired by Apple
