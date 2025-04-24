@@ -140,12 +140,24 @@ fun LoginScreen(
             )
         }
 
+        // Anonymous Login Link
+        Text(
+            text = "Continue as Guest",
+            color = Color(0xff8dc44b),
+            fontSize = 16.sp,
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .clickable {
+                    performAnonymousLogin(context)
+                }
+        )
+
         // Sign Up Link
         Text(
             text = "Don't have an account? Sign Up",
             color = Color(0xff8dc44b), // Link color (you can change it to your desired color)
             modifier = Modifier
-                .padding(top = 16.dp) // Space from the Login button
+                .padding(top = 5.dp) // Space from the Login button
                 .clickable {
                     navController.navigate("register")
                 },
@@ -175,6 +187,27 @@ private fun performLogIn(
                 (context as? android.app.Activity)?.finish()
             } else {
                 Toast.makeText(context, "Failed Log In", Toast.LENGTH_LONG).show()
+            }
+        }
+}
+
+private fun performAnonymousLogin(context: Context) {
+    val auth = FirebaseAuth.getInstance()
+
+    auth.signInAnonymously()
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "Anonymous Sign In Successful", Toast.LENGTH_SHORT).show()
+
+                // Start MainActivity
+                val intent = Intent(context, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
+
+                // Finish SignInActivity
+                (context as? android.app.Activity)?.finish()
+            } else {
+                Toast.makeText(context, "Anonymous Sign In Failed", Toast.LENGTH_LONG).show()
             }
         }
 }
