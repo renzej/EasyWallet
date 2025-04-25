@@ -5,3 +5,14 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.google.gms.google.services) apply false
 }
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.google.gms:google-services:${libs.versions.googleGmsGoogleServices.get()}")
+        classpath("com.android.tools.build:gradle:${libs.versions.agp.get()}")
+    }
+}

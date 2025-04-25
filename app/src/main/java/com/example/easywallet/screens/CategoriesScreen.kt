@@ -1,6 +1,7 @@
 package com.example.easywallet.screens
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -26,11 +27,14 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.text.AnnotatedString
+import com.example.easywallet.db.Category
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Context) {
     // Scroll state for the content
     val scrollState = rememberScrollState()
 
@@ -52,7 +56,7 @@ fun CategoriesScreen() {
 
     // State for text field values
     var categoryName by remember { mutableStateOf("") }
-    var categoryDescription by remember { mutableStateOf("") }
+    var categoryLimit by remember { mutableStateOf("") }
 
     // Content of the sheet (form for adding category)
     val bottomSheetContent = @Composable {
@@ -73,10 +77,10 @@ fun CategoriesScreen() {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = categoryDescription,
+                    value = categoryLimit,
                     onValueChange = { input ->
                         if (input.all { it.isDigit() }) { // Ensure only numbers are allowed
-                            categoryDescription = input
+                            categoryLimit = input
                         }
                     },
                     label = { Text("Category Limit") },
@@ -87,7 +91,52 @@ fun CategoriesScreen() {
 
             Button(
                 onClick = {
-                    // Handle form submission logic here
+                    // Get the current user's UID
+                    val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+                    // Check if the user is authenticated
+                    if (userId != null) {
+                        // When button is clicked, create a Category object
+                        if (categoryName.isNotBlank() && categoryLimit.isNotBlank()) {
+                            // Convert categoryLimit to a Double
+                            val categoryLimitValue = categoryLimit.toDoubleOrNull()
+
+                            if (categoryLimitValue != null) {
+                                // Create the category object, including the user ID
+                                val newCategory = Category(
+                                    categoryName = categoryName,
+                                    categoryLimit = categoryLimitValue,
+                                    userId = userId // Link the category to the current user
+                                )
+
+                                // Add the category to Firestore
+                                firestore.collection("categories") // Firestore collection
+                                    .add(newCategory)
+                                    .addOnSuccessListener {
+                                        // Show success Toast
+                                        Toast.makeText(context, "Category added successfully", Toast.LENGTH_SHORT).show()
+
+                                        // Reset fields and close the bottom sheet
+                                        categoryName = ""
+                                        categoryLimit = ""
+                                        showBottomSheet = false
+                                    }
+                                    .addOnFailureListener { e ->
+                                        // Show failure Toast
+                                        Toast.makeText(context, "Error adding category: $e", Toast.LENGTH_SHORT).show()
+                                    }
+                            } else {
+                                // Show error Toast for invalid category limit
+                                Toast.makeText(context, "Invalid category limit", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            // Show error Toast for missing fields
+                            Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        // Show error Toast if the user is not authenticated
+                        Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
@@ -182,14 +231,6 @@ fun CategoriesScreen() {
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    // Example categories list (replace with your actual categories data)
-                    repeat(30) {
-                        Text(
-                            text = "Category Item $it",
-                            modifier = Modifier.padding(5.dp),
-                            fontSize = 16.sp
-                        )
-                    }
                 }
 
                 // Show bottom sheet here (use ModalBottomSheet)
@@ -225,4 +266,3 @@ fun CategoriesScreen() {
         }
     )
 }
-

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -31,12 +32,17 @@ import com.example.easywallet.screens.NewsScreen
 import com.example.easywallet.screens.SplashScreen
 import com.example.easywallet.screens.TransactionsScreen
 import com.example.easywallet.ui.theme.EasyWalletTheme
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        FirebaseApp.initializeApp(this)
+        val firestore = FirebaseFirestore.getInstance()
+
         setContent {
             EasyWalletTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -51,7 +57,8 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         modifier = Modifier.padding(innerPadding),
                         newsManager = newsManager,
-                        quotesManager = quotesManager
+                        quotesManager = quotesManager,
+                        firestore = firestore
                     )
                 }
             }
@@ -66,7 +73,8 @@ fun EasyWallet(
     navController: NavController,
     modifier: Modifier,
     newsManager: NewsManager,
-    quotesManager: QuotesManager
+    quotesManager: QuotesManager,
+    firestore: FirebaseFirestore
 ) {
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
@@ -92,7 +100,11 @@ fun EasyWallet(
             composable(Destination.Account.route) { AccountScreen() }
             composable(Destination.News.route) { NewsScreen(newsManager) }
 
-            composable(Destination.Category.route) { CategoriesScreen() }
+            composable(Destination.Category.route) {
+                val context = LocalContext.current
+                CategoriesScreen(firestore = firestore, context = context)
+            }
+
         }
     }
 }
