@@ -27,7 +27,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import com.example.easywallet.db.Category
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -35,30 +38,51 @@ import com.google.firebase.firestore.FirebaseFirestore
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Context) {
-    // Scroll state for the content
     val scrollState = rememberScrollState()
-
-    // Optimized way for toggle
     val shouldShowTopBarTitle by remember {
         derivedStateOf { scrollState.value >= 115 }
     }
-
     val topBarColor by remember {
         derivedStateOf {
             if (shouldShowTopBarTitle) Color(0xFFE5E5EA) else Color.Transparent
         }
     }
 
-    // State for bottom sheet
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    fun fetchCategories() {
+        if (userId != null) {
+            firestore.collection("categories")
+                .whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    categories = snapshot.documents.mapNotNull { it.toObject(Category::class.java) }
+                    isLoading = false
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Error fetching categories", Toast.LENGTH_SHORT).show()
+                    isLoading = false
+                }
+        }
+    }
+
+    // Initial load
+    LaunchedEffect(userId) {
+        fetchCategories()
+    }
+
+    // Refresh state
+    val isRefreshing by rememberUpdatedState(isLoading)
+    val pullRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing)
+
     val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-
-    // State for text field values
     var categoryName by remember { mutableStateOf("") }
     var categoryLimit by remember { mutableStateOf("") }
 
-    // Content of the sheet (form for adding category)
     val bottomSheetContent = @Composable {
         Column(
             modifier = Modifier
@@ -79,7 +103,7 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
                 OutlinedTextField(
                     value = categoryLimit,
                     onValueChange = { input ->
-                        if (input.all { it.isDigit() }) { // Ensure only numbers are allowed
+                        if (input.all { it.isDigit() }) {
                             categoryLimit = input
                         }
                     },
@@ -91,50 +115,35 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
 
             Button(
                 onClick = {
-                    // Get the current user's UID
-                    val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-                    // Check if the user is authenticated
                     if (userId != null) {
-                        // When button is clicked, create a Category object
                         if (categoryName.isNotBlank() && categoryLimit.isNotBlank()) {
-                            // Convert categoryLimit to a Double
                             val categoryLimitValue = categoryLimit.toDoubleOrNull()
-
                             if (categoryLimitValue != null) {
-                                // Create the category object, including the user ID
                                 val newCategory = Category(
                                     categoryName = categoryName,
                                     categoryLimit = categoryLimitValue,
-                                    userId = userId // Link the category to the current user
+                                    userId = userId
                                 )
 
-                                // Add the category to Firestore
-                                firestore.collection("categories") // Firestore collection
+                                firestore.collection("categories")
                                     .add(newCategory)
                                     .addOnSuccessListener {
-                                        // Show success Toast
                                         Toast.makeText(context, "Category added successfully", Toast.LENGTH_SHORT).show()
-
-                                        // Reset fields and close the bottom sheet
                                         categoryName = ""
                                         categoryLimit = ""
                                         showBottomSheet = false
+                                        fetchCategories()
                                     }
-                                    .addOnFailureListener { e ->
-                                        // Show failure Toast
-                                        Toast.makeText(context, "Error adding category: $e", Toast.LENGTH_SHORT).show()
+                                    .addOnFailureListener {
+                                        Toast.makeText(context, "Error adding category: $it", Toast.LENGTH_SHORT).show()
                                     }
                             } else {
-                                // Show error Toast for invalid category limit
                                 Toast.makeText(context, "Invalid category limit", Toast.LENGTH_SHORT).show()
                             }
                         } else {
-                            // Show error Toast for missing fields
                             Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        // Show error Toast if the user is not authenticated
                         Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
                     }
                 },
@@ -143,29 +152,21 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
                     .align(Alignment.CenterHorizontally)
                     .height(50.dp),
                 shape = RoundedCornerShape(15.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE5E5EA)
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE5E5EA))
             ) {
-                Text(
-                    text = "Add Category",
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
+                Text(text = "Add Category", fontSize = 18.sp, color = Color.Black)
             }
         }
     }
 
-    // Show bottom sheet when clicked
     if (showBottomSheet) {
         coroutineScope.launch {
-            sheetState.show() // Trigger to show the bottom sheet
+            sheetState.show()
         }
     }
 
     Scaffold(
         topBar = {
-            // Categories TopAppBar
             TopAppBar(
                 title = {
                     Row(
@@ -175,40 +176,26 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Edit button
                         ClickableText(
                             text = AnnotatedString("Edit"),
-                            onClick = {
-                                // Handle the edit button click (e.g., navigate to an edit screen)
-                            },
-                            style = androidx.compose.ui.text.TextStyle(
-                                color = Color(0xFF007AFF),
-                                fontSize = 18.sp
-                            ),
+                            onClick = { /* Handle edit click */ },
+                            style = TextStyle(color = Color(0xFF007AFF), fontSize = 18.sp),
                             modifier = Modifier.padding(start = 5.dp)
                         )
 
-                        // Only show the "Categories" title when shouldShowTitle is true
                         AnimatedVisibility(
                             visible = shouldShowTopBarTitle,
-                            enter = fadeIn(animationSpec = tween(durationMillis = 300)),
-                            exit = fadeOut(animationSpec = tween(durationMillis = 300))
+                            enter = fadeIn(tween(300)),
+                            exit = fadeOut(tween(300))
                         ) {
-                            Text(
-                                text = "Categories",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
-                            )
+                            Text("Categories", fontSize = 20.sp, fontWeight = FontWeight.Medium)
                         }
 
-                        // Empty space to balance layout
                         Box(modifier = Modifier.size(50.dp))
                     }
                 },
                 modifier = Modifier.height(80.dp),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = topBarColor // Change color dynamically
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = topBarColor)
             )
         },
         content = { innerPadding ->
@@ -217,23 +204,42 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                // Main content (e.g., list of categories) that is scrollable
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .padding(start = 20.dp, bottom = innerPadding.calculateBottomPadding() + 120.dp)
+                SwipeRefresh(
+                    state = pullRefreshState,
+                    onRefresh = {
+                        isLoading = true
+                        fetchCategories()
+                    }
                 ) {
-                    // Header section with title
-                    Text(
-                        text = "Categories",
-                        fontSize = 38.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                            .padding(start = 20.dp, bottom = innerPadding.calculateBottomPadding() + 120.dp)
+                    ) {
+                        Text(
+                            text = "Categories",
+                            fontSize = 38.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        if (isLoading) {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                        } else {
+                            if (categories.isEmpty()) {
+                                Text("No categories found.", fontSize = 16.sp, modifier = Modifier.padding(top = 20.dp))
+                            } else {
+                                categories.forEach { category ->
+                                    CategoryCard(category = category)
+                                }
+                            }
+                        }
+                    }
                 }
 
-                // Show bottom sheet here (use ModalBottomSheet)
                 if (showBottomSheet) {
                     ModalBottomSheet(
                         sheetState = sheetState,
@@ -243,7 +249,6 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
                     }
                 }
 
-                // FloatingActionButton (FAB) positioned at the bottom center
                 FloatingActionButton(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -252,7 +257,7 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
                         .fillMaxWidth(0.80f)
                         .border(1.dp, Color(10, 132, 255), RoundedCornerShape(15)),
                     onClick = {
-                        showBottomSheet = true // Show the bottom sheet
+                        showBottomSheet = true
                     },
                     containerColor = Color.White
                 ) {
@@ -266,3 +271,31 @@ fun CategoriesScreen(firestore: FirebaseFirestore, context: android.content.Cont
         }
     )
 }
+
+@Composable
+fun CategoryCard(category: Category) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 8.dp, end = 20.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F2F7))
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = category.categoryName,
+                fontSize = 23.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(
+                text = "Limit: $${String.format("%.2f", category.categoryLimit)}",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.DarkGray
+            )
+        }
+    }
+}
+
