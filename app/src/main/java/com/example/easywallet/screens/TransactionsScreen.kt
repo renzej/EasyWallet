@@ -338,7 +338,7 @@ fun TransactionItem(transaction: Transactions) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Category: ${transaction.category}", fontWeight = FontWeight.Bold)
-            Text(text = "Amount: \$${formattedAmount}") // Display the formatted amount
+            Text(text = "Amount: \$${formattedAmount}")
             Text(text = "Date: ${transaction.date}")
         }
     }
