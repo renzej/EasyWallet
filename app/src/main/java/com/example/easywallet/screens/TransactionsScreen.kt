@@ -25,13 +25,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.zIndex
 import com.example.easywallet.db.Category
+import com.example.easywallet.db.Transactions
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,12 +40,14 @@ fun TransactionsScreen(navController: NavHostController) {
     val context = LocalContext.current
     val userId = FirebaseAuth.getInstance().currentUser?.uid
     var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
+    var transactions by remember { mutableStateOf<List<Transactions>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
     // Fetch categories
     LaunchedEffect(userId) {
         if (userId != null) {
             fetchCategories(userId, { categories = it }, { isLoading = it })
+            fetchTransactions(userId, { transactions = it })
         }
     }
 
@@ -80,14 +82,21 @@ fun TransactionsScreen(navController: NavHostController) {
             }
         }
 
-        // Transaction list placeholder
+        // Transaction List
         Column(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 20.dp)
         ) {
-            // You can place your transaction list here
-            Text(text = "Your transaction list goes here...")
+            if (transactions.isEmpty()) {
+                Text("No transactions yet.")
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    transactions.forEach { transaction ->
+                        TransactionItem(transaction)
+                    }
+                }
+            }
         }
     }
 
@@ -116,7 +125,28 @@ fun TransactionsScreen(navController: NavHostController) {
                     onExit = { showBottomCard = false },
                     onSave = { category, amount, date ->
                         showBottomCard = false
-                        println("Saved Transaction -> $category, $amount, $date")
+
+                        val userId = FirebaseAuth.getInstance().currentUser?.uid
+                        if (userId != null) {
+                            val db = FirebaseFirestore.getInstance()
+                            val transaction = hashMapOf(
+                                "userId" to userId,
+                                "category" to category,
+                                "amount" to amount,
+                                "date" to date
+                            )
+
+                            db.collection("transactions")
+                                .add(transaction)
+                                .addOnSuccessListener {
+                                    Toast.makeText(context, "Transaction saved", Toast.LENGTH_SHORT).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(context, "Failed to save transaction", Toast.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 )
             }
@@ -128,7 +158,7 @@ fun TransactionsScreen(navController: NavHostController) {
 fun TransactionForm(
     categories: List<Category>,
     onExit: () -> Unit,
-    onSave: (String, String, String) -> Unit
+    onSave: (String, Double, String) -> Unit  // Updated to pass Double instead of String
 ) {
     var selectedCategory by remember { mutableStateOf("Select Category") }
     var amount by remember { mutableStateOf("") }
@@ -166,7 +196,8 @@ fun TransactionForm(
             TextButton(
                 onClick = {
                     if (selectedCategory != "Select Category" && amount.isNotBlank()) {
-                        onSave(selectedCategory, amount, selectedDate)
+                        val amountDouble = amount.toDoubleOrNull() ?: 0.0  // Convert amount to Double
+                        onSave(selectedCategory, amountDouble, selectedDate)
                     } else {
                         Toast.makeText(context, "Please complete all fields", Toast.LENGTH_SHORT).show()
                     }
@@ -208,7 +239,6 @@ fun TransactionForm(
         }
     }
 }
-
 
 @Composable
 fun CategoryDropdown(
@@ -280,3 +310,38 @@ fun fetchCategories(userId: String?, updateCategories: (List<Category>) -> Unit,
             }
     }
 }
+
+fun fetchTransactions(userId: String?, updateTransactions: (List<Transactions>) -> Unit) {
+    if (userId != null) {
+        FirebaseFirestore.getInstance().collection("transactions")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val fetchedTransactions = snapshot.documents.mapNotNull { it.toObject(Transactions::class.java) }
+                updateTransactions(fetchedTransactions)
+            }
+            .addOnFailureListener {
+                updateTransactions(emptyList()) // return empty list on failure
+            }
+    }
+}
+
+@Composable
+fun TransactionItem(transaction: Transactions) {
+    val formattedAmount = "%.2f".format(transaction.amount) // Format amount to 2 decimal places
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Category: ${transaction.category}", fontWeight = FontWeight.Bold)
+            Text(text = "Amount: \$${formattedAmount}") // Display the formatted amount
+            Text(text = "Date: ${transaction.date}")
+        }
+    }
+}
+
+
