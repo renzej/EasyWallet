@@ -50,6 +50,20 @@ Follow these steps to run EasyWallet locally:
    NEWS_API_KEY=your_key
 4. **Build and run the project**
 
+## Features
+
+### ✅ Implemented
+* **News Feed Integration** - Stay informed with curated news updates across Finance, Technology, and Sports
+* **User Authentication** - Secure login system for personalized tracking
+* **Daily Motivation** - Inspirational quote each day to encourage financial discipline
+
+### 🚧 In Progress / Planned
+* Expense Tracking CRUD
+* Dark Mode
+* Multi-Currency Support
+* Advanced Analytics with Charts
+* Accessibility Improvements
+
 ## Roadmap
 Here are some planned features and improvements for future versions of EasyWallet:
 
